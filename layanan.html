@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jenis Layanan - Mizu Care Laundry</title>
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+</head>
+<body>
+
+  <!-- Mobile Sidebar Controls -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Buka Menu">☰</button>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-brand">Mizu Care Laundry</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-title">Menu Utama</span>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="pesanan.html" class="nav-item" id="nav-pesanan">
+        <span class="nav-icon">📦</span>
+        <span>Pesanan</span>
+      </a>
+      <a href="pelanggan.html" class="nav-item" id="nav-pelanggan">
+        <span class="nav-icon">👥</span>
+        <span>Pelanggan</span>
+      </a>
+      <a href="layanan.html" class="nav-item active" id="nav-layanan">
+        <span class="nav-icon">🧺</span>
+        <span>Jenis Layanan</span>
+      </a>
+
+      <span class="nav-section-title admin-only">Manajemen</span>
+      <a href="karyawan.html" class="nav-item admin-only" id="nav-karyawan">
+        <span class="nav-icon">👷</span>
+        <span>Karyawan</span>
+      </a>
+      <a href="laporan.html" class="nav-item" id="nav-laporan">
+        <span class="nav-icon">📈</span>
+        <span>Laporan</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="user-info-text">
+          <span class="user-name" id="sidebar-user-name">Loading...</span>
+          <span class="user-role" id="sidebar-user-role">-</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btn-logout">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">🧺 Jenis Layanan</h1>
+        <p class="page-subtitle">Daftar paket cuci, tarif per satuan, durasi estimasi pengerjaan, dan status aktif layanan.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" id="btn-tambah-layanan">+ Tambah Layanan</button>
+      </div>
+    </header>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <div class="table-toolbar" style="flex-direction: column; align-items: flex-start; gap: 14px;">
+        <!-- Kategori Tabs -->
+        <div class="toolbar" id="kategori-tabs" style="width: 100%; border-bottom: 1px solid var(--border); padding-bottom: 12px; gap: 8px;">
+          <button class="page-btn active" data-kat="all" style="padding: 8px 16px; font-weight: 500;">Semua Layanan</button>
+          <!-- Dynamic category tab buttons inserted here -->
+        </div>
+
+        <div class="toolbar" style="width: 100%; justify-content: space-between;">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-input" placeholder="Cari layanan...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="table-loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nama Layanan</th>
+              <th>Kategori</th>
+              <th>Satuan</th>
+              <th>Harga Satuan</th>
+              <th>Estimasi</th>
+              <th>Status</th>
+              <th style="text-align: right;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="layanan-tbody">
+            <!-- Populated dynamically by layanan.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL LAYANAN (CREATE / EDIT) -->
+  <div class="modal-overlay" id="modal-layanan">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-layanan-title">➕ Tambah Layanan Baru</h2>
+        <button class="modal-close" data-close="modal-layanan">&times;</button>
+      </div>
+      <form id="form-layanan">
+        <input type="hidden" id="layanan-id">
+
+        <div class="form-group">
+          <label class="form-label" for="layanan-kategori">Kategori Layanan <span style="color:var(--danger)">*</span></label>
+          <select class="form-select" id="layanan-kategori" required>
+            <option value="">-- Pilih Kategori --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="layanan-nama">Nama Layanan <span style="color:var(--danger)">*</span></label>
+          <input type="text" class="form-input" id="layanan-nama" placeholder="Contoh: Cuci Komplit Reguler" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="layanan-satuan">Satuan Hitung <span style="color:var(--danger)">*</span></label>
+            <select class="form-select" id="layanan-satuan" required>
+              <option value="kg">kg (Kilogram)</option>
+              <option value="pcs">pcs (Satuan Buah)</option>
+              <option value="pasang">pasang (Pasangan)</option>
+              <option value="set">set (Satu Setel)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="layanan-harga">Harga Satuan (Rp) <span style="color:var(--danger)">*</span></label>
+            <input type="number" class="form-input" id="layanan-harga" min="0" step="500" placeholder="Contoh: 8000" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="layanan-estimasi">Estimasi Waktu Pengerjaan (Jam) <span style="color:var(--danger)">*</span></label>
+          <input type="number" class="form-input" id="layanan-estimasi" min="1" value="24" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="layanan-deskripsi">Deskripsi & Fasilitas</label>
+          <textarea class="form-textarea" id="layanan-deskripsi" placeholder="Pencucian air hangat, detergen premium, setrika uap..." rows="2"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-layanan">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-simpan-layanan">Simpan Layanan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js?v=2.2"></script>
+  <script src="js/auth.js?v=2.2"></script>
+  <script src="js/layanan.js?v=2.2"></script>
+</body>
+</html>

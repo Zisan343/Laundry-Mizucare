@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Mizu Care Laundry</title>
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      background-color: var(--bg-primary);
+      overflow-x: hidden;
+    }
+
+    .login-container {
+      display: flex;
+      width: 100vw;
+      min-height: 100vh;
+    }
+
+    /* Left Decorative Side */
+    .login-brand-panel {
+      flex: 1.1 1 0;
+      background: var(--accent-gradient);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 80px;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* Background decorative circles */
+    .circle-decoration {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.07);
+      pointer-events: none;
+    }
+    .circle-1 {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      left: -100px;
+    }
+    .circle-2 {
+      width: 500px;
+      height: 500px;
+      bottom: -150px;
+      right: -100px;
+      background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%);
+    }
+    .circle-3 {
+      width: 200px;
+      height: 200px;
+      top: 40%;
+      right: 15%;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 2;
+      max-width: 520px;
+    }
+
+    .brand-logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 10px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      margin-bottom: 28px;
+    }
+
+    .brand-logo-badge .icon {
+      font-size: 26px;
+    }
+
+    .brand-logo-badge span {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-title {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .feature-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    /* Right Form Side */
+    .login-form-panel {
+      flex: 1 1 0;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 24px rgba(60, 50, 35, 0.08);
+    }
+
+    .login-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .login-icon-wrap {
+      width: 54px;
+      height: 54px;
+      background: var(--accent-gradient);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 16px;
+      box-shadow: 0 3px 12px rgba(54, 125, 108, 0.25);
+    }
+
+    .login-card-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .login-card-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #ef4444;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 992px) {
+      .login-brand-panel {
+        display: none;
+      }
+      .login-form-panel {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <!-- Left Decorative Side -->
+    <div class="login-brand-panel">
+      <div class="circle-decoration circle-1"></div>
+      <div class="circle-decoration circle-2"></div>
+      <div class="circle-decoration circle-3"></div>
+
+      <div class="brand-content">
+          <span>Mizu Care Laundry</span>
+
+        <h1 class="brand-title">Sistem Operasional Laundry</h1>
+        <p class="brand-subtitle">
+          Pengelolaan operasional harian yang rapi, tenang, dan efisien.
+        </p>
+
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feature-check">✓</span>
+            <span>Manajemen pesanan real-time</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-check">✓</span>
+            <span>Laporan pendapatan otomatis</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-check">✓</span>
+            <span>Data pelanggan terpusat</span>
+          </li>
+          <li class="feature-item">
+            <span class="feature-check">✓</span>
+            <span>Multi-user dengan role</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right Login Form Side -->
+    <div class="login-form-panel">
+      <div class="login-card">
+        <div class="login-header">
+          <h2 class="login-card-title">Selamat Datang</h2>
+          <p class="login-card-subtitle">Masuk ke akun Anda untuk melanjutkan</p>
+        </div>
+
+        <div id="login-error" class="alert-error">
+          <span>⚠️</span>
+          <span id="error-message">Username atau password salah</span>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              class="form-input" 
+              placeholder="Masukkan username" 
+              required 
+              autocomplete="username"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Masukkan password" 
+              required 
+              autocomplete="current-password"
+            >
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn btn-primary btn-submit">
+            <span id="btn-text">Masuk ke Sistem</span>
+            <span id="btn-spinner" class="spinner" style="display: none; width: 18px; height: 18px; border-width: 2px;"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="js/api.js?v=2.2"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check if already logged in, redirect to dashboard
+      try {
+        const res = await api.get('auth.php?action=check');
+        if (res && res.success && res.data) {
+          const user = (res.data && res.data.user) ? res.data.user : res.data;
+          try { localStorage.setItem('laundry_user', JSON.stringify(user)); } catch (e) {}
+          window.location.href = '/laundry/dashboard.html';
+          return;
+        }
+      } catch (err) {
+        // Not logged in, stay on login page
+        try { localStorage.removeItem('laundry_user'); } catch (e) {}
+      }
+
+      const form = document.getElementById('login-form');
+      const errorAlert = document.getElementById('login-error');
+      const errorMessage = document.getElementById('error-message');
+      const submitBtn = document.getElementById('submit-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        errorAlert.style.display = 'none';
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnSpinner.style.display = 'inline-block';
+
+        const username = form.username.value.trim();
+        const password = form.password.value;
+
+        try {
+          const res = await api.post('auth.php?action=login', { username, password });
+          if (res && res.success) {
+            const user = (res.data && res.data.user) ? res.data.user : res.data;
+            try { localStorage.setItem('laundry_user', JSON.stringify(user)); } catch (e) {}
+            showToast('Login berhasil! Mengalihkan...', 'success');
+            setTimeout(() => {
+              window.location.href = '/laundry/dashboard.html';
+            }, 400);
+          } else {
+            throw new Error(res.message || 'Login gagal.');
+          }
+        } catch (err) {
+          errorAlert.style.display = 'flex';
+          errorMessage.textContent = err.message || 'Gagal terhubung ke server.';
+          showToast(err.message || 'Login gagal.', 'error');
+          submitBtn.disabled = false;
+          btnText.style.display = 'inline';
+          btnSpinner.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

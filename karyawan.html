@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Karyawan - Mizu Care Laundry</title>
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+</head>
+<body>
+
+  <!-- Mobile Sidebar Controls -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Buka Menu">☰</button>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-brand">Mizu Care Laundry</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-title">Menu Utama</span>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="pesanan.html" class="nav-item" id="nav-pesanan">
+        <span class="nav-icon">📦</span>
+        <span>Pesanan</span>
+      </a>
+      <a href="pelanggan.html" class="nav-item" id="nav-pelanggan">
+        <span class="nav-icon">👥</span>
+        <span>Pelanggan</span>
+      </a>
+      <a href="layanan.html" class="nav-item" id="nav-layanan">
+        <span class="nav-icon">🧺</span>
+        <span>Jenis Layanan</span>
+      </a>
+
+      <span class="nav-section-title admin-only">Manajemen</span>
+      <a href="karyawan.html" class="nav-item admin-only active" id="nav-karyawan">
+        <span class="nav-icon">👷</span>
+        <span>Karyawan</span>
+      </a>
+      <a href="laporan.html" class="nav-item" id="nav-laporan">
+        <span class="nav-icon">📈</span>
+        <span>Laporan</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="user-info-text">
+          <span class="user-name" id="sidebar-user-name">Loading...</span>
+          <span class="user-role" id="sidebar-user-role">-</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btn-logout">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">👷 Manajemen Karyawan</h1>
+        <p class="page-subtitle">Kelola akun staf, hak akses peran (admin, kasir, operator), dan status keaktifan.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" id="btn-tambah-karyawan">+ Tambah Karyawan</button>
+      </div>
+    </header>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <div class="table-toolbar">
+        <div class="toolbar" style="flex: 1;">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-input" placeholder="Cari nama atau username...">
+          </div>
+          <div class="filter-group">
+            <label for="filter-role" class="form-label" style="margin: 0; white-space: nowrap;">Peran:</label>
+            <select class="filter-select" id="filter-role">
+              <option value="">Semua Peran</option>
+              <option value="admin">Admin</option>
+              <option value="kasir">Kasir</option>
+              <option value="operator">Operator</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filter-status" class="form-label" style="margin: 0; white-space: nowrap;">Status:</label>
+            <select class="filter-select" id="filter-status">
+              <option value="">Semua Status</option>
+              <option value="aktif">Aktif</option>
+              <option value="nonaktif">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="table-loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Staf</th>
+              <th>Username</th>
+              <th>Kontak</th>
+              <th>Peran</th>
+              <th>Tanggal Masuk</th>
+              <th>Status</th>
+              <th style="text-align: right;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="karyawan-tbody">
+            <!-- Populated dynamically by karyawan.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL KARYAWAN (CREATE / EDIT) -->
+  <div class="modal-overlay" id="modal-karyawan">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-karyawan-title">➕ Tambah Karyawan Baru</h2>
+        <button class="modal-close" data-close="modal-karyawan">&times;</button>
+      </div>
+      <form id="form-karyawan">
+        <input type="hidden" id="karyawan-id">
+
+        <div class="form-group">
+          <label class="form-label" for="karyawan-nama">Nama Lengkap <span style="color:var(--danger)">*</span></label>
+          <input type="text" class="form-input" id="karyawan-nama" placeholder="Contoh: Budi Santoso" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="karyawan-username">Username <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-input" id="karyawan-username" placeholder="budisantoso" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="karyawan-role">Peran / Role <span style="color:var(--danger)">*</span></label>
+            <select class="form-select" id="karyawan-role" required>
+              <option value="kasir">Kasir</option>
+              <option value="operator">Operator</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="karyawan-password">
+            Password <span id="pwd-required-indicator" style="color:var(--danger)">*</span>
+          </label>
+          <input type="password" class="form-input" id="karyawan-password" placeholder="Minimal 6 karakter">
+          <span id="pwd-hint" style="font-size:12px; color:var(--text-muted); display:none; margin-top:4px;">
+            Kosongkan jika tidak ingin mengubah kata sandi lama.
+          </span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="karyawan-email">Email</label>
+            <input type="email" class="form-input" id="karyawan-email" placeholder="budi@laundrypro.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="karyawan-telepon">No. Telepon</label>
+            <input type="tel" class="form-input" id="karyawan-telepon" placeholder="08123456789">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="karyawan-tgl-masuk">Tanggal Masuk</label>
+            <input type="date" class="form-input" id="karyawan-tgl-masuk">
+          </div>
+          <div class="form-group" id="group-status" style="display:none;">
+            <label class="form-label" for="karyawan-status">Status Akun</label>
+            <select class="form-select" id="karyawan-status">
+              <option value="aktif">Aktif</option>
+              <option value="nonaktif">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="karyawan-alamat">Alamat</label>
+          <textarea class="form-textarea" id="karyawan-alamat" placeholder="Alamat domisili..." rows="2"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-karyawan">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-simpan-karyawan">Simpan Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js?v=2.2"></script>
+  <script src="js/auth.js?v=2.2"></script>
+  <script src="js/karyawan.js?v=2.2"></script>
+</body>
+</html>

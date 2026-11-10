@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Mizu Care Laundry</title>
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+</head>
+<body>
+
+  <!-- Mobile Sidebar Controls -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Buka Menu">☰</button>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-brand">Mizu Care Laundry</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-title">Menu Utama</span>
+      <a href="dashboard.html" class="nav-item active" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="pesanan.html" class="nav-item" id="nav-pesanan">
+        <span class="nav-icon">📦</span>
+        <span>Pesanan</span>
+      </a>
+      <a href="pelanggan.html" class="nav-item" id="nav-pelanggan">
+        <span class="nav-icon">👥</span>
+        <span>Pelanggan</span>
+      </a>
+      <a href="layanan.html" class="nav-item" id="nav-layanan">
+        <span class="nav-icon">🧺</span>
+        <span>Jenis Layanan</span>
+      </a>
+
+      <span class="nav-section-title admin-only">Manajemen</span>
+      <a href="karyawan.html" class="nav-item admin-only" id="nav-karyawan">
+        <span class="nav-icon">👷</span>
+        <span>Karyawan</span>
+      </a>
+      <a href="laporan.html" class="nav-item" id="nav-laporan">
+        <span class="nav-icon">📈</span>
+        <span>Laporan</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="user-info-text">
+          <span class="user-name" id="sidebar-user-name">Loading...</span>
+          <span class="user-role" id="sidebar-user-role">-</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btn-logout">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">📊 Dashboard</h1>
+        <p class="page-subtitle">Selamat datang kembali! Berikut ringkasan hari ini.</p>
+      </div>
+      <div class="page-actions">
+        <span id="today-date" style="font-size: 14px; color: var(--text-secondary); background: var(--bg-card); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); box-shadow: var(--card-shadow);"></span>
+        <a href="pesanan.html" class="btn btn-primary">+ Buat Pesanan Baru</a>
+      </div>
+    </header>
+
+    <!-- Stat Cards Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-pesanan-hari-ini">-</div>
+        <div class="stat-label">Pesanan Hari Ini</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-value" id="stat-pendapatan">-</div>
+        <div class="stat-label">Pendapatan Hari Ini</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-value" id="stat-pesanan-aktif">-</div>
+        <div class="stat-label">Pesanan Aktif</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-value" id="stat-total-pelanggan">-</div>
+        <div class="stat-label">Total Pelanggan</div>
+      </div>
+    </div>
+
+    <!-- Latest Orders Table -->
+    <div class="table-container">
+      <div class="table-toolbar">
+        <h2 class="table-title">Pesanan Terbaru</h2>
+        <a href="pesanan.html" class="btn btn-secondary btn-sm">Lihat Semua Pesanan →</a>
+      </div>
+
+      <!-- Loading State -->
+      <div id="table-loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Kode Pesanan</th>
+              <th>Pelanggan</th>
+              <th>No. Telepon</th>
+              <th>Petugas</th>
+              <th>Masuk</th>
+              <th>Estimasi</th>
+              <th>Status Pesanan</th>
+              <th>Status Bayar</th>
+            </tr>
+          </thead>
+          <tbody id="pesanan-tbody">
+            <!-- Populated dynamically by dashboard.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js?v=2.2"></script>
+  <script src="js/auth.js?v=2.2"></script>
+  <script src="js/dashboard.js?v=2.2"></script>
+</body>
+</html>

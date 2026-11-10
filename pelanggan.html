@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Pelanggan - Mizu Care Laundry</title>
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+</head>
+<body>
+
+  <!-- Mobile Sidebar Controls -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Buka Menu">☰</button>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-brand">Mizu Care Laundry</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-title">Menu Utama</span>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="pesanan.html" class="nav-item" id="nav-pesanan">
+        <span class="nav-icon">📦</span>
+        <span>Pesanan</span>
+      </a>
+      <a href="pelanggan.html" class="nav-item active" id="nav-pelanggan">
+        <span class="nav-icon">👥</span>
+        <span>Pelanggan</span>
+      </a>
+      <a href="layanan.html" class="nav-item" id="nav-layanan">
+        <span class="nav-icon">🧺</span>
+        <span>Jenis Layanan</span>
+      </a>
+
+      <span class="nav-section-title admin-only">Manajemen</span>
+      <a href="karyawan.html" class="nav-item admin-only" id="nav-karyawan">
+        <span class="nav-icon">👷</span>
+        <span>Karyawan</span>
+      </a>
+      <a href="laporan.html" class="nav-item" id="nav-laporan">
+        <span class="nav-icon">📈</span>
+        <span>Laporan</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="user-info-text">
+          <span class="user-name" id="sidebar-user-name">Loading...</span>
+          <span class="user-role" id="sidebar-user-role">-</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btn-logout">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">👥 Data Pelanggan</h1>
+        <p class="page-subtitle">Kelola database pelanggan, kontak, riwayat transaksi, dan poin loyalitas.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" id="btn-tambah-pelanggan">+ Tambah Pelanggan</button>
+      </div>
+    </header>
+
+    <!-- Stat Row -->
+    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+      <div class="stat-card">
+        <div class="stat-icon purple">👥</div>
+        <div class="stat-value" id="stat-total-pelanggan">-</div>
+        <div class="stat-label">Total Pelanggan Terdaftar</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon green">👑</div>
+        <div class="stat-value" id="stat-top-pelanggan" style="font-size: 18px; line-height: 1.4;">-</div>
+        <div class="stat-label">Total Belanja Terbanyak</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon amber">⭐</div>
+        <div class="stat-value" id="stat-top-poin" style="font-size: 18px; line-height: 1.4;">-</div>
+        <div class="stat-label">Poin Loyalitas Tertinggi</div>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <div class="table-toolbar">
+        <div class="toolbar" style="flex: 1;">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-input" placeholder="Cari nama, no. telp, atau email...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="table-loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>Nama Lengkap</th>
+              <th>No. Telepon</th>
+              <th>Email</th>
+              <th>Alamat</th>
+              <th>Poin</th>
+              <th>Pesanan</th>
+              <th>Total Belanja</th>
+              <th style="text-align: right;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="pelanggan-tbody">
+            <!-- Populated dynamically by pelanggan.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL PELANGGAN (CREATE / EDIT) -->
+  <div class="modal-overlay" id="modal-pelanggan">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-pelanggan-title">➕ Tambah Pelanggan Baru</h2>
+        <button class="modal-close" data-close="modal-pelanggan">&times;</button>
+      </div>
+      <form id="form-pelanggan">
+        <input type="hidden" id="pelanggan-id">
+
+        <div class="form-group">
+          <label class="form-label" for="pelanggan-nama">Nama Lengkap <span style="color:var(--danger)">*</span></label>
+          <input type="text" class="form-input" id="pelanggan-nama" placeholder="Masukkan nama lengkap pelanggan" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="pelanggan-telepon">No. Telepon</label>
+            <input type="tel" class="form-input" id="pelanggan-telepon" placeholder="Contoh: 08123456789">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pelanggan-email">Email</label>
+            <input type="email" class="form-input" id="pelanggan-email" placeholder="nama@email.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pelanggan-gender">Jenis Kelamin</label>
+          <select class="form-select" id="pelanggan-gender">
+            <option value="L">Laki-laki (L)</option>
+            <option value="P">Perempuan (P)</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pelanggan-alamat">Alamat Domisili</label>
+          <textarea class="form-textarea" id="pelanggan-alamat" placeholder="Alamat lengkap tempat tinggal pelanggan..." rows="2"></textarea>
+        </div>
+
+        <div class="form-group" id="group-poin" style="display:none;">
+          <label class="form-label" for="pelanggan-poin">Poin Loyalitas</label>
+          <input type="number" class="form-input" id="pelanggan-poin" min="0" value="0">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pelanggan-catatan">Catatan</label>
+          <input type="text" class="form-input" id="pelanggan-catatan" placeholder="Catatan preferensi, alergi sabun, dsb...">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-pelanggan">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-simpan-pelanggan">Simpan Pelanggan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js?v=2.2"></script>
+  <script src="js/auth.js?v=2.2"></script>
+  <script src="js/pelanggan.js?v=2.2"></script>
+</body>
+</html>

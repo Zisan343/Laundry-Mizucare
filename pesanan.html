@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Pesanan - Mizu Care Laundry</title>
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+</head>
+<body>
+
+  <!-- Mobile Sidebar Controls -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Buka Menu">☰</button>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-brand">Mizu Care Laundry</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-title">Menu Utama</span>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="pesanan.html" class="nav-item active" id="nav-pesanan">
+        <span class="nav-icon">📦</span>
+        <span>Pesanan</span>
+      </a>
+      <a href="pelanggan.html" class="nav-item" id="nav-pelanggan">
+        <span class="nav-icon">👥</span>
+        <span>Pelanggan</span>
+      </a>
+      <a href="layanan.html" class="nav-item" id="nav-layanan">
+        <span class="nav-icon">🧺</span>
+        <span>Jenis Layanan</span>
+      </a>
+
+      <span class="nav-section-title admin-only">Manajemen</span>
+      <a href="karyawan.html" class="nav-item admin-only" id="nav-karyawan">
+        <span class="nav-icon">👷</span>
+        <span>Karyawan</span>
+      </a>
+      <a href="laporan.html" class="nav-item" id="nav-laporan">
+        <span class="nav-icon">📈</span>
+        <span>Laporan</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="user-info-text">
+          <span class="user-name" id="sidebar-user-name">Loading...</span>
+          <span class="user-role" id="sidebar-user-role">-</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btn-logout">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">📦 Manajemen Pesanan</h1>
+        <p class="page-subtitle">Kelola seluruh transaksi pesanan laundry, status pengerjaan, dan pembayaran.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" id="btn-tambah-pesanan">+ Buat Pesanan</button>
+      </div>
+    </header>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <div class="table-toolbar">
+        <div class="toolbar" style="flex: 1;">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-input" placeholder="Cari kode atau pelanggan...">
+          </div>
+          <div class="filter-group">
+            <label for="filter-status" class="form-label" style="margin: 0; white-space: nowrap;">Status:</label>
+            <select class="filter-select" id="filter-status">
+              <option value="">Semua Status</option>
+              <option value="menunggu">Menunggu</option>
+              <option value="diproses">Diproses</option>
+              <option value="selesai">Selesai</option>
+              <option value="diambil">Diambil</option>
+              <option value="dibatalkan">Dibatalkan</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="table-loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Kode Pesanan</th>
+              <th>Pelanggan</th>
+              <th>Layanan</th>
+              <th>Masuk</th>
+              <th>Estimasi</th>
+              <th>Total Bayar</th>
+              <th>Status</th>
+              <th>Bayar</th>
+              <th style="text-align: right;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="pesanan-tbody">
+            <!-- Populated dynamically by pesanan.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL DETAIL PESANAN -->
+  <div class="modal-overlay" id="modal-detail">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h2 class="modal-title" id="detail-modal-title">📦 Detail Pesanan</h2>
+        <button class="modal-close" data-close="modal-detail">&times;</button>
+      </div>
+      <div id="detail-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer" id="detail-modal-footer">
+        <button class="btn btn-secondary" data-close="modal-detail">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL BUAT PESANAN -->
+  <div class="modal-overlay" id="modal-buat">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h2 class="modal-title">✨ Buat Pesanan Baru</h2>
+        <button class="modal-close" data-close="modal-buat">&times;</button>
+      </div>
+      <form id="form-buat-pesanan">
+        <div class="form-group">
+          <label class="form-label" for="buat-pelanggan">Pilih Pelanggan <span style="color:var(--danger)">*</span></label>
+          <select class="form-select" id="buat-pelanggan" required>
+            <option value="">-- Pilih Pelanggan --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="buat-catatan">Catatan Pesanan</label>
+          <textarea class="form-textarea" id="buat-catatan" placeholder="Contoh: Jangan disetrika baju sutra, pewangi lavender..." rows="2"></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:15px; font-weight:600; color:var(--text-primary);">Daftar Item Layanan</h3>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-add-item">+ Tambah Item</button>
+        </div>
+
+        <div class="items-list" id="items-container">
+          <!-- Dynamic item rows inserted here -->
+        </div>
+
+        <button type="button" class="add-item-btn" id="btn-add-item-dashed" style="margin-top:10px;">
+          + Tambah Item Layanan Lain
+        </button>
+
+        <div class="divider"></div>
+
+        <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:500; color:var(--text-secondary);">Estimasi Total Biaya:</span>
+          <span id="buat-total-display" style="font-size:20px; font-weight:700; color:var(--accent-light);">Rp 0</span>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-buat">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-simpan-pesanan">Simpan Pesanan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL PEMBAYARAN -->
+  <div class="modal-overlay" id="modal-bayar">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">💳 Pembayaran Pesanan</h2>
+        <button class="modal-close" data-close="modal-bayar">&times;</button>
+      </div>
+      <form id="form-bayar">
+        <input type="hidden" id="bayar-id-pesanan">
+        
+        <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="color:var(--text-secondary); font-size:13px;">Kode Pesanan:</span>
+            <span id="bayar-kode" style="font-family:monospace; font-weight:600; color:var(--accent-light);">-</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--text-secondary); font-size:13px;">Total Tagihan:</span>
+            <span id="bayar-tagihan" style="font-size:16px; font-weight:700; color:var(--text-primary);">Rp 0</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bayar-metode">Metode Pembayaran <span style="color:var(--danger)">*</span></label>
+          <select class="form-select" id="bayar-metode" required>
+            <option value="tunai">Tunai (Cash)</option>
+            <option value="qris">QRIS</option>
+            <option value="transfer">Transfer Bank</option>
+            <option value="debit">Kartu Debit</option>
+            <option value="kredit">Kartu Kredit</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bayar-jumlah">Jumlah Uang Dibayar (Rp) <span style="color:var(--danger)">*</span></label>
+          <input type="number" class="form-input" id="bayar-jumlah" min="0" step="1" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Kembalian</label>
+          <div id="bayar-kembali" style="font-size:18px; font-weight:700; color:var(--success); padding:10px 14px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:10px;">
+            Rp 0
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bayar-referensi">Nomor Referensi / No. Transaksi (Opsional)</label>
+          <input type="text" class="form-input" id="bayar-referensi" placeholder="Contoh: REF12345678 / Bukti Transfer">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bayar-catatan">Catatan</label>
+          <input type="text" class="form-input" id="bayar-catatan" placeholder="Catatan transaksi opsional...">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-bayar">Batal</button>
+          <button type="submit" class="btn btn-success" id="btn-submit-bayar">Proses Pembayaran</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL STATUS CEPAT -->
+  <div class="modal-overlay" id="modal-status">
+    <div class="modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 class="modal-title">🔄 Update Status Pesanan</h2>
+        <button class="modal-close" data-close="modal-status">&times;</button>
+      </div>
+      <form id="form-update-status">
+        <input type="hidden" id="status-id-pesanan">
+        <div style="margin-bottom: 16px;">
+          <p style="font-size:13px; color:var(--text-secondary);">Kode Pesanan: <span id="status-kode" style="font-family:monospace; font-weight:600; color:var(--accent-light);">-</span></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="status-pilihan">Pilih Status Baru <span style="color:var(--danger)">*</span></label>
+          <select class="form-select" id="status-pilihan" required>
+            <option value="menunggu">Menunggu</option>
+            <option value="diproses">Diproses</option>
+            <option value="selesai">Selesai</option>
+            <option value="diambil">Diambil</option>
+            <option value="dibatalkan">Dibatalkan</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-status">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Status</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js?v=2.2"></script>
+  <script src="js/auth.js?v=2.2"></script>
+  <script src="js/pesanan.js?v=2.2"></script>
+</body>
+</html>

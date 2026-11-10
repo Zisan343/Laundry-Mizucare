@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan & Statistik - Mizu Care Laundry</title>
+  <link rel="stylesheet" href="css/style.css?v=3.1">
+  <style>
+    @media print {
+      .sidebar, .mobile-menu-btn, .mobile-overlay, .page-actions, .toolbar, .report-tabs-nav {
+        display: none !important;
+      }
+      .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .card, .table-container {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .data-table th, .data-table td {
+        border-bottom: 1px solid #ddd !important;
+        color: #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Sidebar Controls -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Buka Menu">☰</button>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-brand">Mizu Care Laundry</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-title">Menu Utama</span>
+      <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="pesanan.html" class="nav-item" id="nav-pesanan">
+        <span class="nav-icon">📦</span>
+        <span>Pesanan</span>
+      </a>
+      <a href="pelanggan.html" class="nav-item" id="nav-pelanggan">
+        <span class="nav-icon">👥</span>
+        <span>Pelanggan</span>
+      </a>
+      <a href="layanan.html" class="nav-item" id="nav-layanan">
+        <span class="nav-icon">🧺</span>
+        <span>Jenis Layanan</span>
+      </a>
+
+      <span class="nav-section-title admin-only">Manajemen</span>
+      <a href="karyawan.html" class="nav-item admin-only" id="nav-karyawan">
+        <span class="nav-icon">👷</span>
+        <span>Karyawan</span>
+      </a>
+      <a href="laporan.html" class="nav-item active" id="nav-laporan">
+        <span class="nav-icon">📈</span>
+        <span>Laporan</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="user-info-text">
+          <span class="user-name" id="sidebar-user-name">Loading...</span>
+          <span class="user-role" id="sidebar-user-role">-</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btn-logout">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">📈 Laporan & Statistik</h1>
+        <p class="page-subtitle">Analisis performa omset transaksi harian, aktivitas pelanggan loyal, dan kontribusi layanan.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary" id="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button>
+      </div>
+    </header>
+
+    <!-- Report Tabs Navigation -->
+    <div class="report-tabs-nav toolbar" style="margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; gap: 10px;">
+      <button class="page-btn active" id="tab-btn-harian" data-tab="harian" style="padding: 10px 20px; font-weight: 600; font-size: 14px;">
+        💰 Pendapatan Harian
+      </button>
+      <button class="page-btn" id="tab-btn-pelanggan" data-tab="pelanggan" style="padding: 10px 20px; font-weight: 600; font-size: 14px;">
+        👥 Pelanggan Aktif
+      </button>
+      <button class="page-btn" id="tab-btn-layanan" data-tab="layanan" style="padding: 10px 20px; font-weight: 600; font-size: 14px;">
+        🧺 Performa Layanan
+      </button>
+    </div>
+
+    <!-- TAB 1: PENDAPATAN HARIAN -->
+    <section id="tab-content-harian">
+      <!-- Chart Card -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Pendapatan 7 Hari Terakhir</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Tren omset transaksi lunas per hari</p>
+          </div>
+        </div>
+        <div style="position: relative; width: 100%; height: 260px; display: flex; justify-content: center; align-items: center;">
+          <canvas id="chart-pendapatan" width="800" height="260" style="width: 100%; max-height: 260px;"></canvas>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="table-container">
+        <div class="table-toolbar">
+          <h2 class="table-title">Daftar Omset & Transaksi Harian</h2>
+        </div>
+
+        <div id="loading-harian" class="loading-container">
+          <div class="spinner"></div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tanggal Transaksi</th>
+                <th>Jumlah Transaksi</th>
+                <th>Total Pendapatan (Lunas)</th>
+                <th>Total Diskon</th>
+              </tr>
+            </thead>
+            <tbody id="harian-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+            <tfoot id="harian-tfoot" style="background: var(--bg-secondary); font-weight: 700; border-top: 2px solid var(--border);">
+              <!-- Summary row -->
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PELANGGAN AKTIF -->
+    <section id="tab-content-pelanggan" style="display: none;">
+      <div class="table-container">
+        <div class="table-toolbar">
+          <h2 class="table-title">Peringkat Pelanggan Paling Aktif & Loyal</h2>
+        </div>
+
+        <div id="loading-pelanggan" class="loading-container">
+          <div class="spinner"></div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Peringkat</th>
+                <th>Nama Pelanggan</th>
+                <th>No. Telepon</th>
+                <th>Poin Loyalitas</th>
+                <th>Total Pesanan</th>
+                <th>Total Belanja</th>
+              </tr>
+            </thead>
+            <tbody id="pelanggan-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PERFORMA LAYANAN -->
+    <section id="tab-content-layanan" style="display: none;">
+      <div class="table-container">
+        <div class="table-toolbar">
+          <h2 class="table-title">Kontribusi & Penjualan Jenis Layanan</h2>
+        </div>
+
+        <div id="loading-layanan" class="loading-container">
+          <div class="spinner"></div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nama Layanan</th>
+                <th>Kategori</th>
+                <th>Total Qty Terjual</th>
+                <th>Total Omset Pendapatan</th>
+                <th style="min-width: 200px;">Pangsa Pendapatan</th>
+              </tr>
+            </thead>
+            <tbody id="layanan-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js?v=2.2"></script>
+  <script src="js/auth.js?v=2.2"></script>
+  <script src="js/laporan.js?v=2.2"></script>
+</body>
+</html>
